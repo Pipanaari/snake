@@ -7,8 +7,21 @@ int main() {
   int plrx = 10, plry = 5;
 
   while(lastChar != 3) {
+    for(int y = 1; y <= height; y++){
+      for(int x = 1; x <= width; x++){
+        if( x == 1 || x == width || y == 1 || y == height){
+          printf("0");
+        }
+        else if(x == plrx && y == plry){
+          printf("#");
+        }
+        else{
+          printf(".");
+        }
+      }
+      printf("\n");
+    }
     lastChar = _getch();
-    // printf("%d\n", lastChar);  //prints lastChar
     if(lastChar == 224){
       switch(_getch()){
         case 'H': //up
@@ -24,21 +37,9 @@ int main() {
           plry += 1;
           break;
       }
-      // printf("arrow keys baby \n"); //test to see if arrow keys are pressed
     }
-    for(int y = 1; y <= height; y++){
-      for(int x = 1; x <= width; x++){
-        if( x == 1 || x == width || y == 1 || y == height){
-          printf("0");
-        }
-        else if(x == plrx && y == plry){
-          printf("#");
-        }
-        else{
-          printf(".");
-        }
-      }
-      printf("\n");
-    }
+    printf("\e[%dA", height); 
   }
+  printf("\e[%dB", height); //jumps back down after exiting with C^
+  return 0;
 }
