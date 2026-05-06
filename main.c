@@ -39,8 +39,13 @@ int main() {
           break;
       }
     }
-    printf("\e[%dA\e[%dC#", height + 1 - plry, plrx - 1);
-    printf("\e[%dD\e[%dB", plrx, height + 1 - plry); //breaks if x coordinates is 0
+    if(plrx == 1 || plrx == width || plry == 1 || plry == height){
+      break;
+    }
+    else{
+      printf("\e[%dA\e[%dC#", height + 1 - plry, plrx - 1);
+      printf("\e[%dD\e[%dB", plrx, height + 1 - plry); //breaks if x coordinates is 0
+    }
     // printf("\e[%dA", height); 
   }
   // printf("\e[%dB", height); //jumps back down after exiting with C^
