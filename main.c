@@ -5,6 +5,7 @@ int main() {
   int lastChar = 0;
   int width = 20, height = 10;
   int plrx = 10, plry = 5;
+  char *head = "";
 
   for(int y = 1; y <= height; y++){
     for(int x = 1; x <= width; x++){
@@ -27,15 +28,19 @@ int main() {
       switch(_getch()){
         case 'H': //up
           plry -= 1;
+          head = "^";
           break;
         case 'K': //left
           plrx -= 1;
+          head = "<";
           break;
         case 'M': //right
           plrx += 1;
+          head = ">";
           break;
         case 'P': //down
           plry += 1;
+          head = "v";
           break;
       }
     }
@@ -43,7 +48,7 @@ int main() {
       break;
     }
     else{
-      printf("\e[%dA\e[%dC#", height + 1 - plry, plrx - 1);
+      printf("\e[%dA\e[%dC%s", height + 1 - plry, plrx - 1, head);
       printf("\e[%dD\e[%dB", plrx, height + 1 - plry); //breaks if x coordinates is 0
     }
     // printf("\e[%dA", height); 
