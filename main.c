@@ -2,6 +2,7 @@
 #include <conio.h>
 
 int main() {
+start:
   int lastChar = 0;
   int width = 20, height = 10;
   int plrx = 10, plry = 5;
@@ -45,7 +46,8 @@ int main() {
       }
     }
     if(plrx == 1 || plrx == width || plry == 1 || plry == height){
-      break;
+      printf("\e[%dA", height);
+      goto start;
     }
     else{
       printf("\e[%dA\e[%dC%s", height + 1 - plry, plrx - 1, head);
