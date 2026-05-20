@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <conio.h>
+#include <string.h>
 
 int main() {
 start:
   int lastChar = 0;
-  int width = 20, height = 10;
-  int plrx = 10, plry = 5;
+  int width = 20, height = 10, grid = (width - 2) * (height - 2);
+  int plrx = 10, plry = 5, score = 5, wait = 1;
   char *head = "";
+  int posx[grid], posy[grid];
+  memset(posx, 0, sizeof(posx));
+  memset(posy, 0, sizeof(posy));
+  int x = 1;
+  posx[0] = plrx; posy[0] = plry;
 
   for(int y = 1; y <= height; y++){
     for(int x = 1; x <= width; x++){
@@ -30,6 +36,7 @@ start:
         case 'H': //up
           plry -= 1;
           head = "^";
+          score++;
           break;
         case 'K': //left
           plrx -= 1;
@@ -45,13 +52,24 @@ start:
           break;
       }
     }
+    posy[x] = plry;
+    posx[x] = plrx;
     if(plrx == 1 || plrx == width || plry == 1 || plry == height){
       printf("\e[%dA", height);
       goto start;
     }
     else{
+      int calc = ((x - score) + grid) % grid;
+      if(wait >= score){ 
+        printf("\e[%dA\e[%dC.", height + 1 - posy[calc], posx[calc] - 1);
+        printf("\e[%dD\e[%dB", posx[calc], height + 1 - posy[calc]); 
+      }
       printf("\e[%dA\e[%dC%s", height + 1 - plry, plrx - 1, head);
-      printf("\e[%dD\e[%dB", plrx, height + 1 - plry); //breaks if x coordinates is 0
+      printf("\e[%dD\e[%dB", plrx, height + 1 - plry); 
+      printf("%d %d %d     \n\e[A", calc, score, x);
+      wait++;
+      x++;
+      x = x % (grid + 1);
     }
     // printf("\e[%dA", height); 
   }
