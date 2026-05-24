@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main() {
 start:
   int lastChar = 0;
   int width = 20, height = 10, grid = (width - 2) * (height - 2);
-  int plrx = width / 2, plry = height / 2, score = 5, wait = 1;
+  int plrx = width / 2, plry = height / 2, score = 3, wait = 1;
   char *head = "";
   int posx[grid], posy[grid];
   memset(posx, 0, sizeof(posx));
@@ -36,7 +37,6 @@ start:
         case 'H': //up
           plry -= 1;
           head = "^";
-          score++;
           break;
         case 'K': //left
           plrx -= 1;
@@ -54,6 +54,15 @@ start:
     }
     posy[x] = plry;
     posx[x] = plrx;
+    for(int i = 1, y = x - 2; i < score - 1; i++){
+      int calc = (y + grid) % grid;
+      if(plrx == posx[calc] && plry == posy[calc]){
+        printf("\e[%dA", height);
+        goto start;
+      }
+      y--;
+      y %= grid;
+    }
     if(plrx == 1 || plrx == width || plry == 1 || plry == height || score == grid){
       printf("\e[%dA", height);
       goto start;
