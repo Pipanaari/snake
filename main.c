@@ -8,7 +8,7 @@ start:
   int lastChar = 0;
   int width = 20, height = 10, grid = (width - 2) * (height - 2);
   int plrx = width / 2, plry = height / 2, score = 3, wait = 1;
-  char *head = "";
+  char head = 0;
   int posx[grid], posy[grid];
   memset(posx, 0, sizeof(posx));
   memset(posy, 0, sizeof(posy));
@@ -31,25 +31,41 @@ start:
   }
 
   while(lastChar != 3) {
-    lastChar = _getch();
-    if(lastChar == 224){
-      switch(_getch()){
-        case 'H': //up
-          plry -= 1;
-          head = "^";
-          break;
-        case 'K': //left
-          plrx -= 1;
-          head = "<";
-          break;
-        case 'M': //right
-          plrx += 1;
-          head = ">";
-          break;
-        case 'P': //down
-          plry += 1;
-          head = "v";
-          break;
+    int keepRunning = 1;
+
+    while(keepRunning && lastChar != 3){
+      lastChar = _getch();
+      if(lastChar == 224){
+        switch(_getch()){
+          case 'H': //up
+            if(head != 'v'){
+              plry -= 1;
+              head = '^';
+              keepRunning = 0;
+            }
+            break;
+          case 'K': //left
+            if(head != '>'){
+              plrx -= 1;
+              head = '<';
+              keepRunning = 0;
+            }
+            break;
+          case 'M': //right
+            if(head != '<'){
+              plrx += 1;
+              head = '>';
+              keepRunning = 0;
+            }
+            break;
+          case 'P': //down
+            if(head != '^'){
+              plry += 1;
+              head = 'v';
+              keepRunning = 0;
+            }
+            break;
+        }
       }
     }
     posy[x] = plry;
@@ -74,7 +90,7 @@ start:
         printf("\e[%dA\e[%dC.", height + 1 - posy[scalc], posx[scalc] - 1);
         printf("\e[%dD\e[%dB", posx[scalc], height + 1 - posy[scalc]); 
       }
-      printf("\e[%dA\e[%dC%s", height + 1 - plry, plrx - 1, head);
+      printf("\e[%dA\e[%dC%c", height + 1 - plry, plrx - 1, head);
       printf("\e[%dD\e[%dB", plrx, height + 1 - plry); 
       printf("\e[%dA\e[%dC#", height + 1 - posy[bcalc], posx[bcalc] - 1);
       printf("\e[%dD\e[%dB", posx[bcalc], height + 1 - posy[bcalc]); 
