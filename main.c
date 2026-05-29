@@ -68,6 +68,9 @@ start:
         }
       }
     }
+    if(lastChar == 3){
+      break;
+    }
     posy[x] = plry;
     posx[x] = plrx;
     for(int i = 1, y = x - 2; i < score - 1; i++){
@@ -94,7 +97,7 @@ start:
       printf("\e[%dD\e[%dB", plrx, height + 1 - plry); 
       printf("\e[%dA\e[%dC#", height + 1 - posy[bcalc], posx[bcalc] - 1);
       printf("\e[%dD\e[%dB", posx[bcalc], height + 1 - posy[bcalc]); 
-      printf("%d %d %d     \n\e[A", scalc, wait, x);
+      printf("%d %d %d     \n\e[A", plrx, plry, (plrx - 1) + ((width - 2) * (plry - 2)));
       wait++;
       x++;
       x = x % grid;
