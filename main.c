@@ -7,7 +7,7 @@ int main() {
 start:
   int lastChar = 0;
   int width = 20, height = 10, grid = (width - 2) * (height - 2);
-  int plrx = width / 2, plry = height / 2, score = 3, wait = 1;
+  int plrx = width / 4 + 1, plry = height / 2 + 1, score = 3, wait = 1, apple = (width - 2) * ((height - 2) / 2) + ((width - 2) - (width / 4));
   char head = 0;
   int posx[grid], posy[grid];
   memset(posx, 0, sizeof(posx));
@@ -22,6 +22,9 @@ start:
       }
       else if(x == plrx && y == plry){
         printf("#");
+      }
+      else if(y == ((apple - 1) / (width - 2) + 2) && x == ((apple - 1) % (width - 2) + 2)){
+        printf("@");
       }
       else{
         printf(".");
@@ -71,16 +74,38 @@ start:
     if(lastChar == 3){
       break;
     }
+    int location = (plrx - 1) + ((width - 2) * (plry - 2));
+    int snkLocation[score];
+    int openSpace[grid - score];
     posy[x] = plry;
     posx[x] = plrx;
-    for(int i = 1, y = x - 2; i < score - 1; i++){
+    for(int i = 0, y = x - 1; i < score - 1; i++){
       int calc = (y + grid) % grid;
+      snkLocation[i] = (posx[calc] - 1) + ((width - 2) * (posy[calc] - 2));
       if(plrx == posx[calc] && plry == posy[calc]){
         printf("\e[%dA", height);
         goto start;
       }
       y--;
       y %= grid;
+    }
+    snkLocation[score - 1] = location;
+    for(int i = 0, y = 1; i < grid - score; i++){
+      for(int z = 0; z < score; z++){
+        if(y == snkLocation[z]){
+          y++;
+          i--;
+          break;
+        }
+        else if(z == score - 1){
+          openSpace[i] = y;
+          y++;
+        }
+      }
+    }
+    if(location == apple){
+      score++;
+      apple = openSpace[rand() % (grid - score)];
     }
     if(plrx == 1 || plrx == width || plry == 1 || plry == height || score == grid){
       printf("\e[%dA", height);
@@ -96,8 +121,16 @@ start:
       printf("\e[%dA\e[%dC%c", height + 1 - plry, plrx - 1, head);
       printf("\e[%dD\e[%dB", plrx, height + 1 - plry); 
       printf("\e[%dA\e[%dC#", height + 1 - posy[bcalc], posx[bcalc] - 1);
-      printf("\e[%dD\e[%dB", posx[bcalc], height + 1 - posy[bcalc]); 
-      printf("%d %d %d     \n\e[A", plrx, plry, (plrx - 1) + ((width - 2) * (plry - 2)));
+      printf("\e[%dD\e[%dB", posx[bcalc], height + 1 - posy[bcalc]);
+      printf("\e[%dA\e[%dC@", height - ((apple - 1) / (width - 2) + 1), ((apple - 1) % (width - 2) + 1));
+      printf("\e[%dD\e[%dB", (apple - 1) % (width - 2) + 2, height - ((apple - 1) / (width - 2) + 1));
+      //printf("%d %d %d %d    \n\e[A", (location - 1) % (width - 2) + 1, (location - 1) / (width - 2) + 1, location, apple);
+      /*for(int i = 0; i < 10; i++){
+        printf("%d ", openSpace[i]);
+      }
+      */
+      printf("%d \n\e[A", apple);
+      
       wait++;
       x++;
       x = x % grid;
