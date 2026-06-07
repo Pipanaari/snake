@@ -75,13 +75,13 @@ start:
       break;
     }
     int location = (plrx - 1) + ((width - 2) * (plry - 2));
-    int snkLocation[score];
-    int openSpace[grid - score];
+    int snkLocation[score]; //all coordinates of snake body
+    int openSpace[grid - score]; //coordinates of everything except snake body
     posy[x] = plry;
     posx[x] = plrx;
     for(int i = 0, y = x - 1; i < score - 1; i++){
       int calc = (y + grid) % grid;
-      snkLocation[i] = (posx[calc] - 1) + ((width - 2) * (posy[calc] - 2));
+      snkLocation[i] = (posx[calc] - 1) + ((width - 2) * (posy[calc] - 2)); //getting data for snkLocation
       if(plrx == posx[calc] && plry == posy[calc]){
         printf("\e[%dA", height);
         goto start;
@@ -90,7 +90,7 @@ start:
       y %= grid;
     }
     snkLocation[score - 1] = location;
-    for(int i = 0, y = 1; i < grid - score; i++){
+    for(int i = 0, y = 1; i < grid - score; i++){ //getting data for openSpace
       for(int z = 0; z < score; z++){
         if(y == snkLocation[z]){
           y++;
@@ -105,7 +105,7 @@ start:
     }
     if(location == apple){
       score++;
-      apple = openSpace[rand() % (grid - score)];
+      apple = openSpace[rand() % (grid - score)]; //randomize apple location from open spaces only
     }
     if(plrx == 1 || plrx == width || plry == 1 || plry == height || score == grid){
       printf("\e[%dA", height);
@@ -114,15 +114,15 @@ start:
     else{
       int scalc = ((x - score) + grid) % grid;
       int bcalc = ((x - 1) + grid) % grid;
-      if(wait >= score){ 
-        printf("\e[%dA\e[%dC.", height + 1 - posy[scalc], posx[scalc] - 1);
+      if(wait >= score){
+        printf("\e[%dA\e[%dC.", height + 1 - posy[scalc], posx[scalc] - 1); //remove everything after snake tail
         printf("\e[%dD\e[%dB", posx[scalc], height + 1 - posy[scalc]); 
       }
-      printf("\e[%dA\e[%dC%c", height + 1 - plry, plrx - 1, head);
+      printf("\e[%dA\e[%dC%c", height + 1 - plry, plrx - 1, head); //print snake head
       printf("\e[%dD\e[%dB", plrx, height + 1 - plry); 
-      printf("\e[%dA\e[%dC#", height + 1 - posy[bcalc], posx[bcalc] - 1);
+      printf("\e[%dA\e[%dC#", height + 1 - posy[bcalc], posx[bcalc] - 1); //transorm heads into snake body after one move
       printf("\e[%dD\e[%dB", posx[bcalc], height + 1 - posy[bcalc]);
-      printf("\e[%dA\e[%dC@", height - ((apple - 1) / (width - 2) + 1), ((apple - 1) % (width - 2) + 1));
+      printf("\e[%dA\e[%dC@", height - ((apple - 1) / (width - 2) + 1), ((apple - 1) % (width - 2) + 1)); //print apple
       printf("\e[%dD\e[%dB", (apple - 1) % (width - 2) + 2, height - ((apple - 1) / (width - 2) + 1));
       //printf("%d %d %d %d    \n\e[A", (location - 1) % (width - 2) + 1, (location - 1) / (width - 2) + 1, location, apple);
       /*for(int i = 0; i < 10; i++){
