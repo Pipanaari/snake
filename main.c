@@ -5,12 +5,12 @@
 #include <Windows.h>
 
 int getch_noblock() {
-    if (_kbhit()){
-      return _getch();
-    }
-    else{
-      return -1;
-    }
+  if (_kbhit()){
+    return _getch();
+  }
+  else{
+    return -1;
+  }
 }
 
 int main() {
@@ -27,44 +27,33 @@ start:
 
   for(int y = 1; y <= height; y++){
     for(int x = 1; x <= width; x++){
-      if( x == 1 || x == width || y == 1 || y == height){
-        printf("0");
-      }
-      else if(x == plrx && y == plry){
-        printf("#");
-      }
-      else if(y == ((apple - 1) / (width - 2) + 2) && x == ((apple - 1) % (width - 2) + 2)){
-        printf("@");
-      }
-      else{
-        printf(".");
-      }
+      if( x == 1 || x == width || y == 1 || y == height) printf("0");
+      else if(x == plrx && y == plry) printf("#");
+      else if(y == ((apple - 1) / (width - 2) + 2) && x == ((apple - 1) % (width - 2) + 2)) printf("@");
+      else printf(".");
     }
     printf("\n");
   }
 
   while(lastChar != 3) {
-    Sleep(100);
+    Sleep(150);
 
     do{
       lastChar = getch_noblock();
-      if(lastChar == 224){
-      lastChar = getch_noblock();
-      }
-        if (lastChar  == 'H' && head != 'v') head = '^'; //up
-        if (lastChar  == 'K' && head != '>') head = '<'; //left
-        if (lastChar  == 'M' && head != '<') head = '>'; //right
-        if (lastChar  == 'P' && head != '^') head = 'v'; //down
+      if(lastChar == 224) lastChar = getch_noblock();
+      if (lastChar  == 'H' && head != 'v') head = '^'; //up
+      if (lastChar  == 'K' && head != '>') head = '<'; //left
+      if (lastChar  == 'M' && head != '<') head = '>'; //right
+      if (lastChar  == 'P' && head != '^') head = 'v'; //down
 
-        if(head == '^') plry -= 1;
-        if(head == '<') plrx -= 1;
-        if(head == '>') plrx += 1;
-        if(head == 'v') plry += 1;
+      if(head == '^') plry -= 1;
+      if(head == '<') plrx -= 1;
+      if(head == '>') plrx += 1;
+      if(head == 'v') plry += 1;
 
     }while(head == 0 && lastChar != 3);
-    if(lastChar == 3){
-      break;
-    }
+    if(lastChar == 3) break;
+
     int location = (plrx - 1) + ((width - 2) * (plry - 2));
     int snkLocation[score]; //all coordinates of snake body
     int openSpace[grid - score]; //coordinates of everything except snake body
@@ -74,7 +63,7 @@ start:
       int calc = (y + grid) % grid;
       snkLocation[i] = (posx[calc] - 1) + ((width - 2) * (posy[calc] - 2)); //getting data for snkLocation
       if(plrx == posx[calc] && plry == posy[calc]){
-        printf("\e[%dA", height);
+        printf("Last score = %d     \nCtrl + C to Quit\n\e[%dA", score - 3, height + 2);
         goto start;
       }
       y--;
@@ -99,7 +88,7 @@ start:
       apple = openSpace[rand() % (grid - score)]; //randomize apple location from open spaces only
     }
     if(plrx == 1 || plrx == width || plry == 1 || plry == height || score == grid){
-      printf("\e[%dA", height);
+      printf("Last score = %d     \nCtrl + C to Quit\n\e[%dA", score - 3, height + 2);
       goto start;
     }
     else{
@@ -115,19 +104,11 @@ start:
       printf("\e[%dD\e[%dB", posx[bcalc], height + 1 - posy[bcalc]);
       printf("\e[%dA\e[%dC@", height - ((apple - 1) / (width - 2) + 1), ((apple - 1) % (width - 2) + 1)); //print apple
       printf("\e[%dD\e[%dB", (apple - 1) % (width - 2) + 2, height - ((apple - 1) / (width - 2) + 1));
-      //printf("%d %d %d %d    \n\e[A", (location - 1) % (width - 2) + 1, (location - 1) / (width - 2) + 1, location, apple);
-      /*for(int i = 0; i < 10; i++){
-        printf("%d ", openSpace[i]);
-      }
-      */
-      //printf("%d \n\e[A", apple);
-      
+
       wait++;
       x++;
       x = x % grid;
     }
-    // printf("\e[%dA", height); 
   }
-  // printf("\e[%dB", height); //jumps back down after exiting with C^
   return 0;
 }
