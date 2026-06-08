@@ -2,6 +2,16 @@
 #include <conio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <Windows.h>
+
+int getch_noblock() {
+    if (_kbhit()){
+      return _getch();
+    }
+    else{
+      return -1;
+    }
+}
 
 int main() {
 start:
@@ -34,43 +44,24 @@ start:
   }
 
   while(lastChar != 3) {
-    int keepRunning = 1;
+    Sleep(100);
 
-    while(keepRunning && lastChar != 3){
-      lastChar = _getch();
+    do{
+      lastChar = getch_noblock();
       if(lastChar == 224){
-        switch(_getch()){
-          case 'H': //up
-            if(head != 'v'){
-              plry -= 1;
-              head = '^';
-              keepRunning = 0;
-            }
-            break;
-          case 'K': //left
-            if(head != '>'){
-              plrx -= 1;
-              head = '<';
-              keepRunning = 0;
-            }
-            break;
-          case 'M': //right
-            if(head != '<'){
-              plrx += 1;
-              head = '>';
-              keepRunning = 0;
-            }
-            break;
-          case 'P': //down
-            if(head != '^'){
-              plry += 1;
-              head = 'v';
-              keepRunning = 0;
-            }
-            break;
-        }
+      lastChar = getch_noblock();
       }
-    }
+        if (lastChar  == 'H' && head != 'v') head = '^'; //up
+        if (lastChar  == 'K' && head != '>') head = '<'; //left
+        if (lastChar  == 'M' && head != '<') head = '>'; //right
+        if (lastChar  == 'P' && head != '^') head = 'v'; //down
+
+        if(head == '^') plry -= 1;
+        if(head == '<') plrx -= 1;
+        if(head == '>') plrx += 1;
+        if(head == 'v') plry += 1;
+
+    }while(head == 0 && lastChar != 3);
     if(lastChar == 3){
       break;
     }
@@ -129,7 +120,7 @@ start:
         printf("%d ", openSpace[i]);
       }
       */
-      printf("%d \n\e[A", apple);
+      //printf("%d \n\e[A", apple);
       
       wait++;
       x++;
